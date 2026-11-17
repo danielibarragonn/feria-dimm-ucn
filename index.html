@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Feria vocacional · DIMM UCN</title>
+<link rel="icon" href="logo_ucn.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Lienzo fijo de 1920×1080 que se escala a la pantalla (TV o pantalla táctil). */
+:root{
+  --ink:#0f2a31; --teal:#16424d; --teal-2:#0d2c34; --cream:#fff8ec; --muted:#5d7079; --line:#dfe6ea;
+  --orange:#f39a2b; --blue:#2e9bd6; --red:#b8402e;
+  --minas:#e8891c; --icmet:#c0492f; --iemet:#1f8a6a;
+  font-family:Manrope,"Segoe UI",system-ui,Arial,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#071a1f;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;overflow:clip;
+  background:radial-gradient(1200px 700px at 90% -10%,rgba(243,154,43,.28),transparent 60%),
+             radial-gradient(1000px 700px at -10% 110%,rgba(46,155,214,.28),transparent 60%),
+             linear-gradient(160deg,var(--teal),var(--teal-2));color:#fff}
+.screen{position:absolute;inset:0;padding:56px 72px;overflow:clip;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(18px);transition:opacity .35s,transform .35s}
+.screen.on{opacity:1;pointer-events:auto;transform:none}
+
+/* Barra superior de las pantallas interiores */
+.bar{display:flex;align-items:center;gap:28px;margin-bottom:34px;min-height:88px}
+.back{display:flex;align-items:center;gap:14px;height:88px;padding:0 34px 0 26px;border-radius:44px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.22);font-size:30px;font-weight:800}
+.back:active{background:rgba(255,255,255,.25)}
+.bar h2{margin:0;font-size:54px;letter-spacing:-.02em;font-weight:800;flex:1}
+.bar img,.brand img{background:#fff;border-radius:50%;padding:5px;object-fit:contain;box-shadow:0 0 0 4px rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.35)}
+.bar img{width:88px;height:88px}
+
+/* ---------- Inicio ---------- */
+#inicio{padding:64px 88px}
+.brand{display:flex;align-items:center;gap:22px;font-size:24px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.95}
+.brand img{width:104px;height:104px}
+.hero{margin:46px 0 40px}
+.hero h1{font-size:96px;line-height:1;letter-spacing:-.03em;margin:0 0 22px;font-weight:800;max-width:1500px}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--orange),#ffd166);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:34px;margin:0;opacity:.85;font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;flex:1;max-height:440px;min-height:380px}
+.tile{position:relative;border-radius:36px;padding:36px 36px 40px;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;color:#fff;
+  box-shadow:0 20px 50px rgba(0,0,0,.28);transition:transform .15s}
+.tile:active{transform:scale(.97)}
+.tile .ic{width:104px;height:104px;border-radius:28px;background:rgba(255,255,255,.18);display:grid;place-items:center;margin-bottom:auto;flex:none}
+.tile .ic svg{width:66px;height:66px}
+.tile b{font-size:50px;line-height:1.05;letter-spacing:-.02em;margin-top:24px}
+.tile span{font-size:25px;opacity:.9;margin-top:12px;font-weight:600;line-height:1.3}
+.tile .go{position:absolute;top:44px;right:36px;font-size:44px;opacity:.7}
+.t1{background:linear-gradient(150deg,#e8891c,#c96a10)}
+.t2{background:linear-gradient(150deg,#2e9bd6,#1a6fa3)}
+.t3{background:linear-gradient(150deg,#c0492f,#8e2c1a)}
+.t4{background:linear-gradient(150deg,#1f8a6a,#11634b)}
+.home-foot{display:flex;align-items:center;justify-content:space-between;margin-top:40px;font-size:24px}
+.touch{display:flex;align-items:center;gap:16px;font-weight:700;opacity:.9}
+.touch i{width:22px;height:22px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 0 rgba(243,154,43,.7);animation:ping 1.8s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 22px rgba(243,154,43,0)}100%{box-shadow:0 0 0 0 rgba(243,154,43,0)}}
+.qr-mini{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.1);border-radius:24px;padding:14px 22px 14px 14px;font-weight:700;line-height:1.3}
+.qr-mini .qr{width:118px;height:118px}
+.qrs{display:flex;gap:20px}
+.qr-mini b{color:#ffd166}
+.qr{background:#fff;border-radius:14px;padding:6px;flex:none}
+.qr svg{display:block;width:100%;height:100%}
+.fs{position:absolute;top:56px;right:72px;font-size:20px;font-weight:700;padding:14px 22px;border-radius:30px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2)}
+
+/* ---------- Carreras ---------- */
+.lead{font-size:28px;margin:-18px 0 24px;opacity:.88;font-weight:600}
+.lead b{color:#ffd166}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;flex:1;min-height:0}
+.card{background:var(--cream);color:var(--ink);border-radius:32px;padding:30px 34px 28px;display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.25)}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:12px;background:var(--c)}
+.tag{align-self:flex-start;font-size:20px;font-weight:800;letter-spacing:.08em;color:#fff;background:var(--c);padding:7px 14px;border-radius:10px}
+.card h3{font-size:38px;line-height:1.08;margin:14px 0 6px;letter-spacing:-.02em}
+.role{font-size:25px;font-weight:800;color:var(--c);margin-bottom:10px}
+.card p{font-size:21px;line-height:1.4;margin:0 0 14px;color:#2c454d;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chips span{font-size:17px;font-weight:700;padding:7px 13px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,#fff);color:color-mix(in srgb,var(--c) 75%,#000)}
+.card h4{margin:4px 0 8px;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card ul{margin:0 0 12px;padding-left:24px;font-size:20px;line-height:1.4;font-weight:600}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:18px;margin-top:auto;padding-top:12px;border-top:2px dashed var(--line)}
+.card > *, .adm > *{flex-shrink:0}
+.facts dt{color:var(--muted);font-weight:700}
+.facts dd{margin:0;font-weight:800}
+.card .acts{display:flex;gap:14px;margin-top:16px}
+.btn{flex:1;height:68px;border-radius:22px;font-size:24px;font-weight:800;display:grid;place-items:center;background:var(--c);color:#fff}
+.btn.alt{background:transparent;color:var(--c);border:3px solid var(--c)}
+.btn:active{filter:brightness(.9)}
+
+/* ---------- Malla ---------- */
+.tabs{display:flex;gap:16px}
+.tabs button{height:84px;padding:0 34px;border-radius:24px;font-size:26px;font-weight:800;background:rgba(255,255,255,.1);border:3px solid transparent;display:flex;align-items:center;gap:14px}
+.tabs button i{width:18px;height:18px;border-radius:50%;background:var(--c)}
+.tabs button[aria-current="true"]{background:var(--cream);color:var(--ink);border-color:var(--c)}
+.years{display:grid;gap:22px;flex:1;min-height:0}
+.year{background:var(--cream);color:var(--ink);border-radius:28px;padding:24px 22px 20px;display:flex;flex-direction:column;min-height:0;position:relative;overflow:hidden}
+.year::before{content:"";position:absolute;inset:0 0 auto 0;height:10px;background:var(--c)}
+.year .yh{display:flex;align-items:baseline;justify-content:space-between}
+.year .yn{font-size:40px;font-weight:800;letter-spacing:-.02em}
+.year .ys{font-size:18px;font-weight:700;color:var(--muted)}
+.year .yt{font-size:23px;font-weight:800;color:var(--c);margin:4px 0 14px;line-height:1.2;min-height:56px}
+.year ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.year li{font-size:19.5px;font-weight:700;line-height:1.2;display:flex;gap:10px;align-items:flex-start}
+.year li::before{content:"";flex:none;width:12px;height:12px;border-radius:4px;margin-top:6px;background:var(--k)}
+.year li.prj{background:color-mix(in srgb,var(--orange) 18%,#fff);border-radius:10px;padding:5px 8px;margin:0 -8px}
+.year li.prj::before{border-radius:50%;background:var(--orange)}
+.year li.more{color:var(--muted);font-weight:600;font-size:18px}
+.year li.more::before{background:#AF7AC5}
+.year li.big{font-size:23px;font-weight:800;background:var(--c);color:#fff;border-radius:12px;padding:10px 12px;margin:6px -6px 0}
+.year li.big::before{display:none}
+.year .prac{margin-top:auto;padding-top:12px;font-size:18px;font-weight:800;color:#a8640c}
+.mfoot{display:flex;align-items:center;gap:30px;margin-top:24px;font-size:21px;font-weight:700}
+.legend{display:flex;gap:24px;flex-wrap:wrap;flex:1;opacity:.92}
+.legend span{display:flex;align-items:center;gap:9px}
+.legend i{width:16px;height:16px;border-radius:5px}
+.mfoot .qr{width:128px;height:128px}
+.qrtxt{max-width:270px;line-height:1.3}
+
+/* ---------- Postula ---------- */
+.adm{background:var(--cream);color:var(--ink);border-radius:32px;padding:30px 34px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.adm::before{content:"";position:absolute;inset:0 0 auto 0;height:12px;background:var(--c)}
+.adm h3{font-size:34px;margin:12px 0 16px;line-height:1.1}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.nums div{background:#fff;border-radius:18px;padding:14px 12px;text-align:center;border:2px solid var(--line)}
+.nums b{display:block;font-size:40px;font-weight:800;color:var(--c);letter-spacing:-.02em;line-height:1.1}
+.nums small{font-size:16px;font-weight:700;color:var(--muted);line-height:1.2;display:block;margin-top:4px}
+.stack{display:flex;height:44px;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.stack i{display:grid;place-items:center;font-style:normal;font-size:17px;font-weight:800;color:#fff}
+.pond{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.3fr) auto;gap:6px 14px;font-size:19px;font-weight:700}
+.pond span:nth-child(odd){display:flex;align-items:center;gap:10px}
+.pond span:nth-child(odd)::before{content:"";width:14px;height:14px;border-radius:4px;background:var(--k)}
+.pond span:nth-child(even){text-align:right;font-weight:800}
+.req{font-size:18px;color:#3d555d;font-weight:600;line-height:1.4;margin:14px 0 0}
+.adm .more{display:flex;align-items:center;gap:16px;margin-top:auto;padding-top:16px;border-top:2px dashed var(--line);font-size:19px;font-weight:700;color:var(--muted)}
+.adm .more .qr{width:112px;height:112px;border:2px solid var(--line)}
+.pfoot{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:22px;margin-top:22px}
+.pfoot > div{background:rgba(255,255,255,.1);border-radius:24px;padding:18px 24px;font-size:20px;line-height:1.42;font-weight:600}
+.pfoot b{color:#ffd166}
+.src{font-size:16px;opacity:.7;margin-top:12px;font-weight:600}
+
+/* ---------- Arcade ---------- */
+#arcade{padding:0;background:#0b1d23}
+#arcade iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#arcade .back{position:absolute;top:22px;left:22px;z-index:2;height:72px;font-size:24px;background:rgba(10,30,36,.75);backdrop-filter:blur(4px)}
+
+/* Aviso de inactividad */
+.idle{position:absolute;left:50%;bottom:40px;transform:translate(-50%,180%);background:var(--cream);color:var(--ink);padding:22px 34px;border-radius:24px;font-size:26px;font-weight:800;box-shadow:0 18px 50px rgba(0,0,0,.4);transition:transform .3s;z-index:10;display:flex;gap:18px;align-items:center}
+.idle{visibility:hidden}
+.idle.on{transform:translate(-50%,0);visibility:visible}
+.idle b{color:var(--red);font-size:34px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- ===================== INICIO ===================== -->
+  <section class="screen" id="inicio">
+    <div class="brand"><img src="logo_ucn.png" alt="">Departamento de Ingeniería<br>Metalúrgica y Minas · UCN</div>
+    <button class="fs" id="fs" hidden>⛶ Pantalla completa</button>
+    <div class="hero">
+      <h1>Descubre las carreras de <em>minería y metalurgia</em> de la UCN</h1>
+      <p>Toca una opción para comenzar</p>
+    </div>
+    <div class="tiles">
+      <button class="tile t1" data-go="carreras"><span class="go">→</span><span class="ic" data-icon="pick"></span><b>Las carreras</b><span>Qué hace cada una y en qué se diferencian</span></button>
+      <button class="tile t2" data-go="malla"><span class="go">→</span><span class="ic" data-icon="grid"></span><b>La malla</b><span>Lo que estudiarás, año a año</span></button>
+      <button class="tile t3" data-go="arcade"><span class="go">→</span><span class="ic" data-icon="game"></span><b>Arcade DIMM</b><span>Tres minijuegos para poner a prueba lo que sabes</span></button>
+      <button class="tile t4" data-go="postula"><span class="go">→</span><span class="ic" data-icon="flag"></span><b>Cómo postular</b><span>Ponderaciones, vacantes y puntajes</span></button>
+    </div>
+    <div class="home-foot">
+      <div class="touch"><i></i>Pantalla táctil · toca para explorar</div>
+      <div class="qrs">
+        <div class="qr-mini"><div class="qr" id="qr-web"></div><div>Conoce el<br><b>DIMM UCN</b></div></div>
+        <div class="qr-mini"><div class="qr" id="qr-ig"></div><div>Síguenos en<br>Instagram<br><b>@dimm.ucn</b></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CARRERAS ===================== -->
+  <section class="screen" id="carreras">
+    <div class="bar"><button class="back" data-go="inicio">← Inicio</button><h2>Tres carreras, una misma industria</h2><img src="logo_ucn.png" alt=""></div>
+    <p class="lead">La minería <b>extrae</b> el mineral y la metalurgia lo <b>transforma en metal</b>. Elige dónde te ves.</p>
+    <div class="cols" id="cards"></div>
+  </section>
+
+  <!-- ===================== MALLA ===================== -->
+  <section class="screen" id="malla">
+    <div class="bar"><button class="back" data-go="inicio">← Inicio</button><h2>La malla, año a año</h2><div class="tabs" id="tabs"></div></div>
+    <div class="years" id="years"></div>
+    <div class="mfoot">
+      <div class="legend">
+        <span><i style="background:#2E86C1"></i>Ciencias básicas</span>
+        <span><i style="background:#28B463"></i>Formación profesional</span>
+        <span><i style="background:var(--orange);border-radius:50%"></i>Ramo de proyecto</span>
+        <span><i style="background:#AF7AC5"></i>Formación general</span>
+        <span id="mstats"></span>
+      </div>
+      <div class="qr" id="qr-malla"></div>
+      <div class="qrtxt">Escanea para ver la malla interactiva completa en tu celular</div>
+    </div>
+  </section>
+
+  <!-- ===================== POSTULA ===================== -->
+  <section class="screen" id="postula">
+    <div class="bar"><button class="back" data-go="inicio">← Inicio</button><h2>Cómo postular · Admisión 2027</h2><img src="logo_ucn.png" alt=""></div>
+    <div class="cols" id="adm"></div>
+    <div class="pfoot">
+      <div><b>Requisitos mínimos (las tres carreras):</b> <span id="req"></span></div>
+      <div><b>Otra vía de ingreso:</b> Ingeniería Civil Plan Común. Cursas un primer año común y luego puedes seguir, entre otras, Ing. Civil de Minas o Ing. Civil Metalúrgica, según cupos, avance y notas.</div>
+      <div><b>Admisión UCN</b><br>admision@ucn.cl · +56 55 235 5355<br>WhatsApp +56 9 3430 8938 · Instagram @admision_ucn
+        <div class="src" id="src"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== ARCADE ===================== -->
+  <section class="screen" id="arcade">
+    <button class="back" data-go="inicio">← Salir del arcade</button>
+  </section>
+
+  <div class="idle" id="idle">Volviendo al inicio en <b id="idle-n">10</b> s · toca la pantalla para seguir</div>
+</div>
+
+<!-- Datos de las mallas: se toman del sitio de mallas interactivas (siempre actualizados).
+     Si no hay internet, se usa la copia local mallas.js de este repositorio. -->
+<script src="https://danielibarragonn.github.io/mallas-dimm-ucn/mallas.js"></script>
+<script>window.MALLAS || document.write('<script src="mallas.js"><\/script>');</script>
+<script src="qr.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CONFIGURACIÓN DE LA FERIA — editar aquí textos, enlaces y datos
+   ===================================================================== */
+const FERIA = {
+  // Sitio con las mallas interactivas completas (se usa para los QR)
+  urlMallas: "https://danielibarragonn.github.io/mallas-dimm-ucn/",
+  // QR de la pantalla de inicio
+  urlDimm: "https://ficg.ucn.cl/dimm/",
+  urlInstagram: "https://www.instagram.com/dimm.ucn/",
+  // Segundos sin tocar la pantalla antes de volver al inicio
+  inactividad: 90,
+  inactividadArcade: 150,
+  // Si la página se abre como archivo local (file://) no se puede detectar el uso dentro del arcade
+  inactividadArcadeSinAcceso: 300,
+  fuente: "Fuente: admision.ucn.cl (Admisión 2027, consultado en noviembre de 2026). Datos referenciales: confirma siempre en el sitio oficial.",
+  carreras: {
+    minas: {
+      rol: "Diseña y opera la mina",
+      texto: "Aprendes a diseñar, dirigir, operar y controlar faenas mineras a cielo abierto y subterráneas, y los distintos métodos para extraer el mineral.",
+      tematicas: ["Faena", "Física", "Gestión de proyectos", "Matemática", "Metalurgia", "Minería"],
+      laboral: ["Industria minera metálica y no metálica", "Empresas de servicios a la minería", "Organismos públicos de la industria extractiva", "Investigación y docencia"],
+      duracion: "5 años (10 semestres)", titulo: "Ingeniero/a Civil de Minas", grado: "Licenciado/a en Ciencias de la Ingeniería",
+      admision: { vacantes: 68, corte: "717,95", pond: {NEM:15, Ranking:20, "C. Lectora":15, "Matemática M1":35, "Matemática M2":5, "Ciencias o Historia":10},
+                  url: "https://admision.ucn.cl/carreras/mineria/ingenieria-civil-de-minas/" },
+      anios: ["Bases de matemática, física y química", "Ciencias de la ingeniería y geología", "Operaciones mineras", "Diseño y gestión de minas", "Especialización y Capstone"]
+    },
+    icmet: {
+      rol: "Transforma el mineral en metal",
+      texto: "Te especializas en los procesos que transforman minerales metálicos y no metálicos, y en diseñar e implementar de forma sustentable proyectos y plantas metalúrgicas.",
+      tematicas: ["Ingeniería", "Metal", "Minerales", "Minería", "Proyectos"],
+      laboral: ["Industria minera", "Empresas de servicios a la minería", "Organismos de la industria extractiva", "Investigación y docencia"],
+      duracion: "5 años (10 semestres)", titulo: "Ingeniero/a Civil Metalúrgico/a", grado: "Licenciado/a en Ciencias de la Ingeniería",
+      admision: { vacantes: 50, corte: "682,75", pond: {NEM:10, Ranking:25, "C. Lectora":10, "Matemática M1":40, "Matemática M2":5, "Ciencias o Historia":10},
+                  url: "https://admision.ucn.cl/carreras/mineria/ingenieria-civil-metalurgica/" },
+      anios: ["Bases de matemática, física y química", "Termodinámica, geología y primeras operaciones", "Procesamiento de minerales", "Hidro, piro y electrometalurgia", "Control de procesos y titulación"]
+    },
+    iemet: {
+      rol: "Opera y mejora la planta",
+      texto: "Diriges, implementas y administras proyectos de ingeniería metalúrgica, y desarrollas técnicas para obtener y tratar los metales. Una carrera de 4 años.",
+      tematicas: ["Ciencia de materiales", "Fabricación", "Metalurgia", "Operación", "Protección"],
+      laboral: ["Industria minero-metalúrgica", "Empresas de servicios a la minería", "Organismos de la industria extractiva", "Investigación y docencia"],
+      duracion: "4 años (8 semestres)", titulo: "Ingeniero/a en Metalurgia", grado: "Licenciado/a en Ingeniería en Metalurgia",
+      admision: { vacantes: 30, corte: "601,30", pond: {NEM:15, Ranking:30, "C. Lectora":10, "Matemática M1":30, "Matemática M2":5, "Ciencias o Historia":10},
+                  url: "https://admision.ucn.cl/carreras/mineria/ingenieria-en-metalurgia/" },
+      anios: ["Bases de matemática, física y química", "Ciencias para la metalurgia", "Procesos metalúrgicos", "Control de procesos y titulación"]
+    }
+  },
+  requisitos: "Requisitos mínimos: puntaje ponderado de 500 y promedio PAES de 458 (o egresar en el 10% superior de tu promoción)."
+};
+const POND_COLORS = {NEM:"#16424d", Ranking:"#2e9bd6", "C. Lectora":"#8e6bbf", "Matemática M1":"#e8891c", "Matemática M2":"#c0492f", "Ciencias o Historia":"#1f8a6a"};
+
+/* ---------- utilidades ---------- */
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const CATCOL = Object.fromEntries(Object.entries(MALLAS.categorias).map(([k,v]) => [k, v.color]));
+const qr = (el, url) => { try{ el.innerHTML = QR.svg(url, {ecl:"L", color:"#0f2a31"}); }catch(e){ el.remove(); } };
+const ICONS = {
+  pick:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4c3 0 6 2 7 5-3-1-6-1-8 0"/><path d="M14 4c-3 0-6 2-7 5 3-1 6-1 8 0"/><path d="M12 9 4 21"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="16" rx="1.5"/><rect x="17" y="4" width="4" height="16" rx="1.5"/><path d="M8 9h2M15 14h2"/></svg>',
+  game:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6 8h12a4 4 0 0 1 4 4v2a3 3 0 0 1-5.4 1.8L15 14H9l-1.6 1.8A3 3 0 0 1 2 14v-2a4 4 0 0 1 4-4z"/><path d="M7 11v3M5.5 12.5h3"/><circle cx="16" cy="11.5" r=".6" fill="#fff"/><circle cx="18" cy="13" r=".6" fill="#fff"/></svg>',
+  flag:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>'
+};
+$$("[data-icon]").forEach(el => el.innerHTML = ICONS[el.dataset.icon]);
+
+/* ---------- escala del lienzo ---------- */
+function fit(){
+  const s = Math.min(innerWidth/1920, innerHeight/1080);
+  $("#stage").style.transform = `scale(${s}) translate(-50%,-50%)`;
+}
+addEventListener("resize", fit); fit();
+
+/* ---------- datos de las mallas ---------- */
+const CAR = MALLAS.carreras.map(c => {
+  const rows = Object.values(c.semestres).flat().map(([nombre,sigla,sem,sct,cat]) => ({nombre,sigla,sem:+sem,sct:+sct,cat}));
+  const maxSem = Math.max(...rows.map(r => r.sem));
+  return {...c, rows, maxSem, sct: rows.reduce((a,r) => a + r.sct, 0), info: FERIA.carreras[c.id]};
+});
+
+/* ---------- Carreras ---------- */
+$("#cards").innerHTML = CAR.map(c => `
+  <article class="card" style="--c:${c.acento}">
+    <span class="tag">${esc(c.corto)}</span>
+    <h3>${esc(c.nombre)}</h3>
+    <div class="role">${esc(c.info.rol)}</div>
+    <p>${esc(c.info.texto)}</p>
+    <div class="chips">${c.info.tematicas.map(t => `<span>${esc(t)}</span>`).join("")}</div>
+    <h4>Dónde trabajarás</h4>
+    <ul>${c.info.laboral.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+    <dl class="facts"><dt>Duración</dt><dd>${esc(c.info.duracion)}</dd><dt>Título</dt><dd>${esc(c.info.titulo)}</dd><dt>Grado</dt><dd>${esc(c.info.grado)}</dd></dl>
+    <div class="acts"><button class="btn" data-go="malla" data-car="${c.id}">Ver su malla</button><button class="btn alt" data-go="postula">Cómo postular</button></div>
+  </article>`).join("");
+
+/* ---------- Malla simplificada ---------- */
+let carSel = CAR[0].id;
+$("#tabs").innerHTML = CAR.map(c => `<button data-car="${c.id}" style="--c:${c.acento}"><i></i>${esc(c.corto)}</button>`).join("");
+$$("#tabs button").forEach(b => b.onclick = () => renderMalla(b.dataset.car));
+
+function yearList(c, rows, first){
+  const isPrj = r => /^proyecto|capstone|titulaci/i.test(r.nombre) && r.sigla !== "CAPS";
+  const out = [];
+  const elect = rows.filter(r => /^EP/.test(r.sigla));
+  const fg = rows.filter(r => r.cat === "FG");
+  const prac = rows.find(r => r.sigla === "PRACT");
+  const caps = rows.find(r => r.sigla === "CAPS");
+  rows.filter(r => !elect.includes(r) && !fg.includes(r) && r !== prac && r !== caps)
+      .sort((a,b) => isPrj(a) - isPrj(b))
+      .forEach(r => out.push(`<li class="${isPrj(r) ? "prj" : ""}" style="--k:${CATCOL[r.cat]||"#888"}">${esc(r.nombre)}</li>`));
+  if(elect.length) out.push(`<li style="--k:${CATCOL.ELE}">${elect.length === 1 ? "1 electivo profesional" : elect.length + " electivos profesionales"}</li>`);
+  if(fg.length) out.push(`<li class="more">+ ${fg.length} de formación general${first ? " (inglés, comunicación y formación valórica)" : ""}</li>`);
+  if(caps) out.push(`<li class="big">${esc(caps.nombre === "Capstone project" ? "Capstone project: proyecto de título" : caps.nombre)}</li>`);
+  return {html: out.join(""), prac};
+}
+function renderMalla(id){
+  carSel = id;
+  const c = CAR.find(x => x.id === id);
+  $$("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.car === id));
+  const years = Math.ceil(c.maxSem / 2);
+  $("#years").style.gridTemplateColumns = `repeat(${years},1fr)`;
+  let html = "";
+  let fgShown = false;
+  for(let y=1; y<=years; y++){
+    const rows = c.rows.filter(r => Math.ceil(r.sem/2) === y);
+    const first = !fgShown && rows.some(r => r.cat === "FG"); if(first) fgShown = true;
+    const sct = rows.reduce((a,r) => a + r.sct, 0);
+    const {html: list, prac} = yearList(c, rows, first);
+    html += `<div class="year" style="--c:${c.acento}">
+      <div class="yh"><span class="yn">Año ${y}</span><span class="ys">${sct} SCT</span></div>
+      <div class="yt">${esc(c.info.anios[y-1] || "")}</div>
+      <ol>${list}</ol>
+      ${prac ? `<div class="prac">★ Práctica profesional</div>` : ""}
+    </div>`;
+  }
+  $("#years").innerHTML = html;
+  $("#mstats").textContent = `${c.nombre}: ${c.maxSem} semestres · ${c.rows.length} ramos · ${c.sct} SCT`;
+  qr($("#qr-malla"), FERIA.urlMallas + "#" + c.id);
+}
+
+/* ---------- Postula ---------- */
+$("#adm").innerHTML = CAR.map(c => {
+  const a = c.info.admision;
+  const stack = Object.entries(a.pond).map(([k,v]) => `<i style="width:${v}%;background:${POND_COLORS[k]}">${v >= 10 ? v + "%" : ""}</i>`).join("");
+  const list = Object.entries(a.pond).map(([k,v]) => `<span style="--k:${POND_COLORS[k]}">${esc(k)}</span><span>${v}%</span>`).join("");
+  return `<article class="adm" style="--c:${c.acento}">
+    <span class="tag">${esc(c.corto)}</span>
+    <h3>${esc(c.nombre)}</h3>
+    <div class="nums">
+      <div><b>${a.vacantes}</b><small>vacantes 2027</small></div>
+      <div><b>${esc(a.corte)}</b><small>puntaje de corte 2026</small></div>
+      <div><b>${c.info.duracion.split(" (")[0]}</b><small>de duración</small></div>
+    </div>
+    <div class="stack">${stack}</div>
+    <div class="pond">${list}</div>
+    <div class="more"><div class="qr" data-url="${esc(a.url)}"></div><span>Escanea para ver toda la información de admisión de esta carrera</span></div>
+  </article>`;
+}).join("");
+$$("#adm .qr").forEach(el => qr(el, el.dataset.url));
+$("#src").textContent = FERIA.fuente;
+$("#req").textContent = FERIA.requisitos.replace(/^Requisitos mínimos: /, "");
+qr($("#qr-web"), FERIA.urlDimm);
+qr($("#qr-ig"), FERIA.urlInstagram);
+
+/* ---------- Arcade ---------- */
+let arcadeFrame = null, arcadeAccess = true;
+function openArcade(){
+  if(!arcadeFrame){
+    arcadeFrame = document.createElement("iframe");
+    arcadeFrame.src = "arcade.html";
+    arcadeFrame.setAttribute("allow", "fullscreen; gamepad; autoplay");
+    arcadeFrame.title = "Arcade DIMM";
+    $("#arcade").prepend(arcadeFrame);
+  }
+  setTimeout(() => { try{ arcadeFrame.focus(); arcadeFrame.contentWindow.focus(); }catch(e){} }, 50);
+}
+function closeArcade(){
+  // Al salir se recarga el arcade, para que el siguiente visitante parta desde el menú.
+  if(arcadeFrame){ arcadeFrame.remove(); arcadeFrame = null; }
+}
+
+/* ---------- Navegación ---------- */
+let current = "inicio";
+function go(id, opts={}){
+  if(id === "malla") renderMalla(opts.car || carSel);
+  if(current === "arcade" && id !== "arcade") closeArcade();
+  $$(".screen").forEach(s => s.classList.toggle("on", s.id === id));
+  current = id;
+  if(id === "arcade") openArcade();
+  poke();
+}
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-go]");
+  if(t) go(t.dataset.go, {car: t.dataset.car});
+});
+
+/* ---------- Inactividad: vuelve solo al inicio ---------- */
+let last = Date.now();
+function poke(){ last = Date.now(); $("#idle").classList.remove("on"); }
+["pointerdown","keydown","wheel","touchstart"].forEach(ev => addEventListener(ev, poke, {passive:true, capture:true}));
+function watchFrames(){
+  // Registra actividad dentro del arcade y de sus juegos (mismo origen).
+  if(!arcadeFrame) return;
+  const hook = w => { try{ if(w && !w.__dimmHook){ w.__dimmHook = true; ["pointerdown","keydown","touchstart"].forEach(ev => w.addEventListener(ev, poke, {passive:true, capture:true})); } }catch(e){} };
+  try{
+    const w = arcadeFrame.contentWindow; hook(w);
+    $$("iframe", w.document).forEach(f => hook(f.contentWindow));
+    arcadeAccess = true;
+  }catch(e){ arcadeAccess = false; }
+}
+setInterval(() => {
+  watchFrames();
+  if(current === "inicio") return;
+  const limit = (current !== "arcade" ? FERIA.inactividad
+               : arcadeAccess ? FERIA.inactividadArcade : FERIA.inactividadArcadeSinAcceso) * 1000;
+  const left = Math.ceil((limit - (Date.now() - last)) / 1000);
+  if(left <= 0){ go("inicio"); return; }
+  if(left <= 10){ $("#idle-n").textContent = left; $("#idle").classList.add("on"); }
+}, 500);
+
+/* ---------- Pantalla completa ---------- */
+const fsBtn = $("#fs");
+if(document.fullscreenEnabled){
+  fsBtn.hidden = false;
+  fsBtn.onclick = () => document.documentElement.requestFullscreen().catch(() => {});
+  document.addEventListener("fullscreenchange", () => fsBtn.hidden = !!document.fullscreenElement);
+}
+addEventListener("contextmenu", e => e.preventDefault());
+
+/* ---------- arranque (permite abrir directo con #malla, #postula, etc.) ---------- */
+const start = location.hash.slice(1);
+const [scr, car] = start.split("-");
+go(["carreras","malla","postula","arcade"].includes(scr) ? scr : "inicio", {car: CAR.some(c => c.id === car) ? car : undefined});
+</script>
+</body>
+</html>
